@@ -1,26 +1,215 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+/* Inlined from the `shadcn` package (custom data-* variants + utilities) so the
+   heavyweight CLI is not a runtime dependency. */
+@import "./shadcn-base.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
+/* ───────────────────────── Theme tokens exposed to Tailwind ───────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space), var(--font-inter), sans-serif;
   --font-mono: var(--font-geist-mono);
+
+  /* Brand palette */
+  --color-ink: var(--ink);
+  --color-ivory: var(--ivory);
+  --color-cream: var(--cream);
+  --color-peach: var(--peach);
+  --color-copper: var(--copper);
+  --color-copper-bright: var(--copper-bright);
+  --color-rust: var(--rust);
+  --color-rust-deep: var(--rust-deep);
+  --color-gold: var(--gold);
+
+  /* shadcn surface tokens */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2.2);
+  --radius-3xl: calc(var(--radius) * 3);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ───────────────────────── Brand values ───────────────────────── */
+:root {
+  --ink: #1c0f08;
+  --ivory: #f7efe4;
+  --cream: #f1e1d1;
+  --peach: #e2b794;
+  --copper: #b5642f;
+  --copper-bright: #d98b50;
+  --rust: #8a3d1c;
+  --rust-deep: #4f1d0d;
+  --gold: #d9a86a;
+
+  /* shadcn — warm-tinted */
+  --background: #f7efe4;
+  --foreground: #2a1810;
+  --card: #fdf8f1;
+  --card-foreground: #2a1810;
+  --popover: #fdf8f1;
+  --popover-foreground: #2a1810;
+  --primary: #b5642f;
+  --primary-foreground: #fbeee2;
+  --secondary: #efe2d3;
+  --secondary-foreground: #3a2317;
+  --muted: #efe6da;
+  --muted-foreground: #8a7461;
+  --accent: #ead9c6;
+  --accent-foreground: #3a2317;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e4d6c5;
+  --input: #ddccb9;
+  --ring: #b5642f;
+
+  /* Design philosophy: no rounded corners anywhere */
+  --radius: 0rem;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* Lenis manages scroll; keep native smooth off to avoid conflicts */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv11";
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--copper);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--copper);
+    outline-offset: 3px;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+    letter-spacing: -0.02em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ───────────────────────── Utilities ───────────────────────── */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* The signature hero copper gradient (matches reference) */
+  /* Blood-red signature hero gradient */
+  .bg-hero-copper {
+    background:
+      radial-gradient(120% 95% at 50% 33%, #e23a26 0%, #b01a12 22%, #7a0d0a 50%, #460706 78%, #1c0302 100%);
+  }
+  .bg-ink-grad {
+    background:
+      radial-gradient(110% 120% at 50% 0%, #2c0908 0%, #180505 60%, #0f0202 100%);
+  }
+  .bg-rust-grad {
+    background:
+      radial-gradient(120% 120% at 70% 0%, #951613 0%, #5e0c0a 55%, #2c0504 100%);
+  }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .edge-mask-y {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  /*
+   * Signature 6-edge portrait shape: a sharp rectangle with the TOP-LEFT and
+   * BOTTOM-RIGHT corners chamfered (angled cuts) — a true hexagon (6 sides).
+   * The top-left cut is where the "Next ›" control nests, per the reference.
+   */
+  .clip-hexcard {
+    --hx: 2.1rem;
+    clip-path: polygon(
+      var(--hx) 0,
+      100% 0,
+      100% calc(100% - var(--hx)),
+      calc(100% - var(--hx)) 100%,
+      0 100%,
+      0 var(--hx)
+    );
+  }
+}
+
+/*
+ * Global design philosophy — NO ROUNDED CORNERS anywhere in the project.
+ * This intentionally squares every element (including utilities like
+ * `rounded-full` and any third-party component defaults).
+ */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* Explicit opt-ins that override the global reset (higher specificity). */
+.radius-full {
+  border-radius: 9999px !important;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
