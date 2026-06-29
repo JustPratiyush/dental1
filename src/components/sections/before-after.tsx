@@ -120,6 +120,7 @@ export function BeforeAfter() {
               src={AFTER}
               alt="Smile after treatment"
               fill
+              priority
               sizes="(max-width: 1024px) 92vw, 1100px"
               className="object-cover"
             />
